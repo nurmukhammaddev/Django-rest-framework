@@ -69,9 +69,20 @@ class RetriveApiView(generics.RetrieveAPIView):
     lookup_field = 'pk'
 
 
-
-class ProductUpdateView(generics.UpdateAPIView):
+class ProductRetriveUpdateView(generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
+
+
+class ProductRetriveUpdateApiView(generics.RetrieveUpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+class ProductDelete(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
 
