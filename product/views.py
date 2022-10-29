@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
-
+from rest_framework import generics
 from django.views.decorators.csrf import csrf_exempt
-
+from .serializer import ProductSerializer
 from .models import Product
 
 
@@ -32,3 +32,46 @@ def api_view(request):
     }
 
     return JsonResponse(result)
+
+
+class ProductCreateView(generics.CreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class ProductListView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        qs = super(ProductListView, self).get_queryset()
+        price = self.request.GET.get('price')
+        if price:
+            qs = qs.filter(price__gte = price)
+        return qs
+
+
+class ProductListApiCreateView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        qs = super(ProductListApiCreateView, self).get_queryset()
+        price = self.request.GET.get('price')
+        if price:
+            qs = qs.filter(price__gte = price)
+        return qs
+
+
+class RetriveApiView(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+
+
+class ProductUpdateView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
