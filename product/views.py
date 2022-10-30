@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 import json
-from rest_framework import generics
+
+from requests import Response
+from rest_framework import generics, status, viewsets
 from django.views.decorators.csrf import csrf_exempt
 from .serializer import ProductSerializer
 from .models import Product
@@ -80,9 +82,46 @@ class ProductRetriveUpdateApiView(generics.RetrieveUpdateAPIView):
     serializer_class = ProductSerializer
     lookup_field = 'pk'
 
+
 class ProductDelete(generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"detail": "Deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductRetriveDeleted(generics.RetrieveDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"detail": "Deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductRetriveUpdateDeleted(generics.RetrieveDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({"detail": "Deleted"}, status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+
+
 
 
